@@ -6,7 +6,13 @@ import router from './router'
 import App from './App.vue'
 import './styles/global.css'
 
+// 注册全局组件
+import AppIcon from '@/components/icons/AppIcon.vue'
+
 const app = createApp(App)
+
+// 全局组件
+app.component('AppIcon', AppIcon)
 
 app.use(createPinia())
 app.use(router)

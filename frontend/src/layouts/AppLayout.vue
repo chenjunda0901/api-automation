@@ -3,17 +3,19 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
-          <span class="logo-icon">📡</span>
+          <div class="logo-icon">
+            <AppIcon name="zap" :size="24" />
+          </div>
           <span class="logo-text">API Pilot</span>
         </div>
       </div>
       <nav class="sidebar-nav">
         <router-link to="/" class="nav-item" :class="{ active: isActive('/') }">
-          <span class="nav-icon">📊</span>
+          <AppIcon name="dashboard" :size="20" class="nav-icon" />
           <span class="nav-text">仪表盘</span>
         </router-link>
         <router-link to="/projects" class="nav-item" :class="{ active: isActive('/projects') }">
-          <span class="nav-icon">📁</span>
+          <AppIcon name="folder" :size="20" class="nav-icon" />
           <span class="nav-text">项目管理</span>
         </router-link>
       </nav>
@@ -23,6 +25,7 @@
           <span class="user-name">{{ userStore.user?.username }}</span>
         </div>
         <button class="logout-btn" @click="handleLogout">
+          <AppIcon name="arrowLeft" :size="16" />
           <span>退出</span>
         </button>
       </div>
@@ -108,41 +111,54 @@ watch(() => projectStore.currentProject, async (project) => {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  background: var(--color-bg);
 }
 
 .sidebar {
-  width: 240px;
-  background: var(--surface-card);
-  border-right: 1px solid var(--border-default);
+  width: var(--sidebar-width);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  position: relative;
 }
 
+/* 侧边栏顶部 */
 .sidebar-header {
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--border-default);
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .logo-icon {
-  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  background: var(--gradient-hero);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
 }
 
 .logo-text {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
 }
 
+/* 导航区域 */
 .sidebar-nav {
   flex: 1;
-  padding: var(--space-3);
+  padding: var(--space-4);
   overflow-y: auto;
 }
 
@@ -151,95 +167,110 @@ watch(() => projectStore.currentProject, async (project) => {
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) var(--ease-out);
   margin-bottom: var(--space-1);
+  font-weight: var(--font-medium);
 }
 
 .nav-item:hover {
-  background: var(--surface-hover);
-  color: var(--text-primary);
+  background: var(--color-surface-hover);
+  color: var(--color-text);
 }
 
 .nav-item.active {
-  background: var(--surface-selected);
-  color: var(--primary-500);
+  background: var(--color-surface-active);
+  color: var(--color-primary);
+}
+
+.nav-item.active .nav-icon {
+  color: var(--color-primary);
 }
 
 .nav-icon {
-  font-size: 18px;
+  color: var(--color-text-muted);
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
 .nav-text {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--text-sm);
 }
 
+/* 底部区域 */
 .sidebar-footer {
   padding: var(--space-4);
-  border-top: 1px solid var(--border-default);
+  border-top: 1px solid var(--color-border);
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-bottom: var(--space-3);
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-full);
-  background: var(--primary-500);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .user-name {
-  font-size: 14px;
-  color: var(--text-primary);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  font-weight: var(--font-medium);
 }
 
 .logout-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   width: 100%;
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-default);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 .logout-btn:hover {
-  background: var(--error-bg);
-  color: var(--error);
-  border-color: var(--error);
+  background: var(--color-error-light);
+  color: var(--color-error);
+  border-color: var(--color-error);
 }
 
+/* 主内容区 */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--color-bg);
 }
 
 .topbar {
-  height: 56px;
-  padding: 0 var(--space-6);
-  background: var(--surface-card);
-  border-bottom: 1px solid var(--border-default);
+  height: var(--topbar-height);
+  padding: 0 var(--space-8);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .topbar-left {
@@ -248,9 +279,10 @@ watch(() => projectStore.currentProject, async (project) => {
 }
 
 .page-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
 }
 
 .topbar-right {
@@ -260,18 +292,72 @@ watch(() => projectStore.currentProject, async (project) => {
 }
 
 .env-select {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border-default);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: white;
-  font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-sm);
   cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.env-select:hover {
+  border-color: var(--color-border-hover);
+}
+
+.env-select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 .content-area {
   flex: 1;
-  padding: var(--space-6);
+  padding: var(--space-8);
   overflow-y: auto;
-  background: var(--surface-bg);
+  background: var(--color-bg);
+}
+
+/* 入场动画 */
+.stagger-enter > * {
+  opacity: 0;
+  animation: fadeInUp var(--duration-slow) var(--ease-out) forwards;
+}
+
+.stagger-enter > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-enter > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-enter > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-enter > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-enter > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-enter > *:nth-child(6) { animation-delay: 250ms; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式 */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: var(--sidebar-collapsed);
+  }
+  
+  .logo-text,
+  .nav-text,
+  .user-name {
+    display: none;
+  }
+  
+  .nav-item {
+    justify-content: center;
+    padding: var(--space-3);
+  }
 }
 </style>
