@@ -99,13 +99,13 @@ async function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary-50) 0%, var(--surface-bg) 100%);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-bg) 100%);
 }
 
 .login-card {
   width: 400px;
   padding: var(--space-8);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
 }
@@ -134,7 +134,7 @@ async function handleLogin() {
 }
 
 .login-subtitle {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
@@ -151,7 +151,7 @@ async function handleLogin() {
 }
 
 .demo-hint {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   font-size: 12px;
 }
 </style>

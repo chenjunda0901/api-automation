@@ -141,10 +141,10 @@ async function handleRun(scene: TestScene) {
 }
 
 .scene-card {
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--color-border);
 }
 
 .scene-header {
@@ -159,26 +159,26 @@ async function handleRun(scene: TestScene) {
 
 .scene-name {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
   margin-bottom: var(--space-1);
 }
 
 .scene-desc {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .scene-footer {
   display: flex;
   gap: var(--space-2);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--color-border);
 }
 
 .empty-state {
   text-align: center;
   padding: var(--space-12);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
 }
 
@@ -188,7 +188,7 @@ async function handleRun(scene: TestScene) {
 }
 
 .empty-text {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   margin-bottom: var(--space-4);
 }
 </style>

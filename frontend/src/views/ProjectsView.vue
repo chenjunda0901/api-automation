@@ -6,8 +6,8 @@
         新建项目
       </el-button>
     </div>
-
-    <div class="projects-grid stagger-enter" v-if="projectStore.projects.length">
+    
+    <div class="projects-grid" v-if="projectStore.projects.length">
       <div 
         v-for="project in projectStore.projects" 
         :key="project.id"
@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -84,8 +84,19 @@ const rules: FormRules = {
   name: [{ required: true, message: '请输入项目名称', trigger: 'blur' }]
 }
 
-onMounted(() => {
-  projectStore.fetchProjects()
+// Debug: 监听 projects 变化
+console.log('[ProjectsView] Initial projects:', projectStore.projects.length)
+watch(() => projectStore.projects.length, (newLen) => {
+  console.log('[ProjectsView] watch - projects.length changed to:', newLen)
+})
+
+onMounted(async () => {
+  console.log('[ProjectsView] onMounted')
+  console.log('[ProjectsView] projects before fetch:', projectStore.projects.length)
+  await projectStore.fetchProjects()
+  console.log('[ProjectsView] projects after fetch:', projectStore.projects.length)
+  // 强制触发响应式更新
+  projectStore.projects = [...projectStore.projects]
 })
 
 async function handleCreate() {
@@ -154,16 +165,16 @@ function formatDate(dateStr: string): string {
 }
 
 .project-card {
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--color-border);
 }
 
 .project-card:hover {
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
 
@@ -187,13 +198,13 @@ function formatDate(dateStr: string): string {
 .project-name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
   margin-bottom: var(--space-2);
 }
 
 .project-desc {
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -203,12 +214,12 @@ function formatDate(dateStr: string): string {
 .project-card-footer {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--color-border);
 }
 
 .project-date {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .empty-state {
@@ -223,7 +234,7 @@ function formatDate(dateStr: string): string {
 
 .empty-text {
   font-size: 16px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   margin-bottom: var(--space-6);
 }
 </style>

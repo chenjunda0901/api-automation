@@ -78,7 +78,7 @@ watch(projectId, async (id) => {
 
 .back-btn {
   padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: white;
   cursor: pointer;
@@ -86,7 +86,7 @@ watch(projectId, async (id) => {
 }
 
 .back-btn:hover {
-  background: var(--surface-hover);
+  background: var(--color-surface-hover);
 }
 
 .project-info {
@@ -96,19 +96,19 @@ watch(projectId, async (id) => {
 .project-name {
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
   margin-bottom: var(--space-1);
 }
 
 .project-desc {
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .project-tabs {
   display: flex;
   gap: var(--space-1);
-  background: var(--surface-card);
+  background: var(--color-surface);
   padding: var(--space-1);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-6);
@@ -121,19 +121,19 @@ watch(projectId, async (id) => {
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-md);
   text-decoration: none;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 .tab-item:hover {
-  color: var(--text-primary);
-  background: var(--surface-hover);
+  color: var(--color-text);
+  background: var(--color-surface-hover);
 }
 
 .tab-item.active {
   color: var(--primary-500);
-  background: var(--surface-selected);
+  background: var(--color-surface-active);
 }
 
 .project-content {

@@ -88,9 +88,9 @@ function formatDate(dateStr: string): string {
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-4);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--color-border);
 }
 
 .report-status {
@@ -124,12 +124,12 @@ function formatDate(dateStr: string): string {
 
 .report-id {
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .report-time {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .report-stats {
@@ -155,7 +155,7 @@ function formatDate(dateStr: string): string {
 
 .report-duration {
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   min-width: 80px;
   text-align: right;
 }
@@ -163,7 +163,7 @@ function formatDate(dateStr: string): string {
 .empty-state {
   text-align: center;
   padding: var(--space-12);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
 }
 
@@ -173,13 +173,13 @@ function formatDate(dateStr: string): string {
 }
 
 .empty-text {
-  color: var(--text-primary);
+  color: var(--color-text);
   font-size: 16px;
   margin-bottom: var(--space-2);
 }
 
 .empty-hint {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 </style>

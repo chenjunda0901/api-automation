@@ -145,9 +145,9 @@ async function handleDelete(id: number) {
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-4);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--color-border);
 }
 
 .api-method {
@@ -185,19 +185,19 @@ async function handleDelete(id: number) {
 
 .api-name {
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--color-text);
   margin-bottom: 2px;
 }
 
 .api-path {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .empty-state {
   text-align: center;
   padding: var(--space-12);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
 }
 
@@ -207,7 +207,7 @@ async function handleDelete(id: number) {
 }
 
 .empty-text {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   margin-bottom: var(--space-4);
 }
 </style>

@@ -128,10 +128,10 @@ async function handleDelete(id: number) {
 }
 
 .env-card {
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--color-border);
 }
 
 .env-header {
@@ -147,7 +147,7 @@ async function handleDelete(id: number) {
 
 .env-name {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .env-vars {
@@ -156,7 +156,7 @@ async function handleDelete(id: number) {
 
 .vars-title {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   margin-bottom: var(--space-2);
 }
 
@@ -173,7 +173,7 @@ async function handleDelete(id: number) {
 }
 
 .var-value {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-family: monospace;
 }
 
@@ -181,13 +181,13 @@ async function handleDelete(id: number) {
   display: flex;
   gap: var(--space-2);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--color-border);
 }
 
 .empty-state {
   text-align: center;
   padding: var(--space-12);
-  background: var(--surface-card);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
 }
 
@@ -197,7 +197,7 @@ async function handleDelete(id: number) {
 }
 
 .empty-text {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   margin-bottom: var(--space-4);
 }
 </style>

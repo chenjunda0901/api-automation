@@ -27,10 +27,13 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (response: AxiosResponse) => {
+    console.log('[Response]', response.config.url, response.data)
     return response.data
   },
   (error: AxiosError) => {
+    console.error('[Request Error]', error.config?.url, error.message)
     if (error.response) {
+      console.error('[Error Response]', error.response.status, error.response.data)
       const { status, data } = error.response as AxiosResponse & { message?: string }
       
       switch (status) {

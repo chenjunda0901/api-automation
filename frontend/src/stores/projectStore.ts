@@ -16,9 +16,16 @@ export const useProjectStore = defineStore('project', () => {
   })
 
   async function fetchProjects() {
+    console.log('[ProjectStore] fetchProjects called')
     loading.value = true
     try {
-      projects.value = await projectApi.list() as unknown as Project[]
+      console.log('[ProjectStore] calling projectApi.list()')
+      const result = await projectApi.list()
+      console.log('[ProjectStore] raw API response:', result)
+      projects.value = result as unknown as Project[]
+      console.log('[ProjectStore] projects set to:', projects.value.length)
+    } catch (error) {
+      console.error('[ProjectStore] fetchProjects error:', error)
     } finally {
       loading.value = false
     }
