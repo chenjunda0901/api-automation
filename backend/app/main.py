@@ -17,6 +17,7 @@ from app.routers import (
     run_router,
     mock_router,
     import_export_router,
+    dashboard_router,
 )
 
 
@@ -75,6 +76,7 @@ app.include_router(reports_router)
 app.include_router(run_router)
 app.include_router(mock_router)
 app.include_router(import_export_router)
+app.include_router(dashboard_router)
 
 
 # 健康检查

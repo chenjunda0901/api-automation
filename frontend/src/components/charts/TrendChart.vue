@@ -14,7 +14,7 @@ import {
   GridComponent,
   LegendComponent
 } from 'echarts/components'
-import type { TrendData } from '@/composables/useDashboardStats'
+import type { TrendDataPoint } from '@/api/dashboard'
 import { useTheme } from '@/composables/useTheme'
 
 // 注册 ECharts 组件
@@ -28,7 +28,7 @@ use([
 ])
 
 interface Props {
-  data: TrendData[]
+  data: TrendDataPoint[]
   height?: number
 }
 

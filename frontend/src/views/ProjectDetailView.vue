@@ -14,9 +14,8 @@
         :key="tab.path"
         :to="tab.path"
         class="tab-item"
-        :class="{ active: isActiveTab(tab.path) }"
+        :class="{ active: isActiveTab(tab.key) }"
       >
-        <span class="tab-icon">{{ tab.icon }}</span>
         <span class="tab-text">{{ tab.name }}</span>
       </router-link>
     </div>
@@ -36,19 +35,19 @@ const route = useRoute()
 const router = useRouter()
 const projectStore = useProjectStore()
 
-const tabs = [
-  { name: '接口', path: '/apis', icon: '🔗' },
-  { name: '用例', path: '/cases', icon: '🧪' },
-  { name: '场景', path: '/scenes', icon: '🎬' },
-  { name: '报告', path: '/reports', icon: '📊' },
-  { name: '环境', path: '/environments', icon: '⚙️' },
-  { name: 'Mock', path: '/mock', icon: '🎭' }
-]
-
 const projectId = computed(() => Number(route.params.projectId))
 
-function isActiveTab(path: string): boolean {
-  return route.path.includes(path)
+const tabs = computed(() => [
+  { name: '接口', path: `/projects/${projectId.value}/apis`, key: '/apis' },
+  { name: '用例', path: `/projects/${projectId.value}/cases`, key: '/cases' },
+  { name: '场景', path: `/projects/${projectId.value}/scenes`, key: '/scenes' },
+  { name: '报告', path: `/projects/${projectId.value}/reports`, key: '/reports' },
+  { name: '环境', path: `/projects/${projectId.value}/environments`, key: '/environments' },
+  { name: 'Mock', path: `/projects/${projectId.value}/mock`, key: '/mock' }
+])
+
+function isActiveTab(key: string): boolean {
+  return route.path.includes(key)
 }
 
 onMounted(async () => {

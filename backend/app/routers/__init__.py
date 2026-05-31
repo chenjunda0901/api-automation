@@ -6,6 +6,7 @@ from app.routers.reports import router as reports_router
 from app.routers.run import router as run_router
 from app.routers.mock import router as mock_router
 from app.routers.import_export import router as import_export_router
+from app.routers.dashboard import router as dashboard_router
 
 __all__ = [
     "auth_router",
@@ -17,4 +18,5 @@ __all__ = [
     "run_router",
     "mock_router",
     "import_export_router",
+    "dashboard_router",
 ]

@@ -4,7 +4,7 @@
  * 健康度仪表盘
  */
 import { computed } from 'vue'
-import type { HealthScore } from '@/composables/useDashboardStats'
+import type { HealthScore } from '@/api/dashboard'
 
 interface Props {
   score: number
@@ -16,6 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
   size: 180
 })
 
+type HealthLevel = 'excellent' | 'good' | 'warning' | 'critical'
+
 const radius = computed(() => props.size / 2 - 20)
 const circumference = computed(() => 2 * Math.PI * radius.value)
 const dashOffset = computed(() => {
@@ -24,23 +26,23 @@ const dashOffset = computed(() => {
 })
 
 const strokeColor = computed(() => {
-  const colors = {
+  const colors: Record<HealthLevel, string> = {
     excellent: '#10B981',
     good: '#22D3EE',
     warning: '#F59E0B',
     critical: '#EF4444'
   }
-  return colors[props.level]
+  return colors[props.level as HealthLevel] || colors.critical
 })
 
 const labelText = computed(() => {
-  const labels = {
+  const labels: Record<HealthLevel, string> = {
     excellent: '优秀',
     good: '良好',
     warning: '警告',
     critical: '危险'
   }
-  return labels[props.level]
+  return labels[props.level as HealthLevel] || '未知'
 })
 </script>
 

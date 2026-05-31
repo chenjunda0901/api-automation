@@ -2,29 +2,14 @@
  * Dashboard Statistics Composable
  * 仪表盘统计数据管理
  */
-import { ref, computed } from 'vue'
-import { useProjectStore } from '@/stores/projectStore'
-
-export interface TrendData {
-  date: string
-  passed: number
-  failed: number
-  total: number
-}
-
-export interface HealthScore {
-  score: number
-  level: 'excellent' | 'good' | 'warning' | 'critical'
-  trend: number
-}
+import { ref } from 'vue'
+import { dashboardApi, type DashboardStats, type TrendDataPoint, type HealthScore, type SceneStat, type FailedScene, type QuickAction } from '@/api/dashboard'
 
 export function useDashboardStats() {
-  const projectStore = useProjectStore()
-  
   const isLoading = ref(false)
   const error = ref<string | null>(null)
   
-  // 模拟数据 - 实际应该从API获取
+  // 统计数据
   const stats = ref({
     totalProjects: 0,
     totalApis: 0,
@@ -35,84 +20,23 @@ export function useDashboardStats() {
   })
   
   // 趋势数据
-  const trendData = computed<TrendData[]>(() => {
-    const days = 7
-    const data: TrendData[] = []
-    const now = new Date()
-    
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date(now)
-      date.setDate(date.getDate() - i)
-      
-      // 模拟数据
-      const passed = Math.floor(Math.random() * 50) + 30
-      const failed = Math.floor(Math.random() * 10)
-      
-      data.push({
-        date: date.toISOString().split('T')[0],
-        passed,
-        failed,
-        total: passed + failed
-      })
-    }
-    
-    return data
-  })
+  const trendData = ref<TrendDataPoint[]>([])
   
   // 健康度评分
-  const healthScore = computed<HealthScore>(() => {
-    const recentPassRate = stats.value.passRate
-    
-    let score = 0
-    let level: HealthScore['level'] = 'critical'
-    
-    if (recentPassRate >= 95) {
-      score = 95 + Math.floor(Math.random() * 5)
-      level = 'excellent'
-    } else if (recentPassRate >= 85) {
-      score = 85 + Math.floor(Math.random() * 10)
-      level = 'good'
-    } else if (recentPassRate >= 70) {
-      score = 70 + Math.floor(Math.random() * 15)
-      level = 'warning'
-    } else {
-      score = Math.floor(recentPassRate)
-      level = 'critical'
-    }
-    
-    return {
-      score: Math.min(score, 100),
-      level,
-      trend: Math.random() > 0.5 ? 1 : -1
-    }
+  const healthScore = ref<HealthScore>({
+    score: 0,
+    level: 'critical',
+    trend: 0
   })
   
   // 热门场景（按执行次数）
-  const topScenes = computed(() => [
-    { id: 1, name: '用户登录流程', runs: 156, passRate: 98 },
-    { id: 2, name: '订单创建流程', runs: 132, passRate: 95 },
-    { id: 3, name: '支付接口测试', runs: 128, passRate: 92 },
-    { id: 4, name: '数据查询接口', runs: 110, passRate: 88 },
-    { id: 5, name: '文件上传接口', runs: 98, passRate: 85 }
-  ])
+  const topScenes = ref<SceneStat[]>([])
   
   // 失败场景
-  const failedScenes = computed(() => [
-    { id: 1, name: '批量导出接口', failCount: 12, lastFail: '2小时前' },
-    { id: 2, name: '复杂查询接口', failCount: 8, lastFail: '5小时前' },
-    { id: 3, name: '通知发送接口', failCount: 5, lastFail: '1天前' }
-  ])
+  const failedScenes = ref<FailedScene[]>([])
   
-  // 健康度颜色
-  const healthColor = computed(() => {
-    const colors = {
-      excellent: '#10B981',
-      good: '#22D3EE',
-      warning: '#F59E0B',
-      critical: '#EF4444'
-    }
-    return colors[healthScore.value.level]
-  })
+  // 快捷操作
+  const quickActions = ref<QuickAction[]>([])
   
   // 获取统计数据
   async function fetchStats() {
@@ -120,19 +44,22 @@ export function useDashboardStats() {
     error.value = null
     
     try {
-      // TODO: 实际API调用
-      // const response = await api.get('/analytics/dashboard')
-      // stats.value = response.data
+      const data = await dashboardApi.getStats() as unknown as DashboardStats
       
-      // 模拟数据
       stats.value = {
-        totalProjects: projectStore.projects.length || 5,
-        totalApis: 128,
-        totalScenes: 45,
-        totalRuns: 2560,
-        passRate: 91.5,
-        avgDuration: 1250
+        totalProjects: data.total_projects,
+        totalApis: data.total_apis,
+        totalScenes: data.total_scenes,
+        totalRuns: data.total_runs,
+        passRate: data.pass_rate,
+        avgDuration: data.avg_duration
       }
+      
+      trendData.value = data.trend_data
+      healthScore.value = data.health_score
+      topScenes.value = data.top_scenes
+      failedScenes.value = data.failed_scenes
+      quickActions.value = data.quick_actions
     } catch (e) {
       error.value = '获取统计数据失败'
       console.error(e)
@@ -149,7 +76,7 @@ export function useDashboardStats() {
     healthScore,
     topScenes,
     failedScenes,
-    healthColor,
+    quickActions,
     fetchStats
   }
 }

@@ -7,21 +7,18 @@
         :value="stats.totalProjects"
         icon="folder"
         color="primary"
-        :trend="12"
       />
       <StatCard 
         title="接口数"
         :value="stats.totalApis"
         icon="api"
         color="info"
-        :trend="8"
       />
       <StatCard 
         title="场景数"
         :value="stats.totalScenes"
         icon="play"
         color="success"
-        :trend="-3"
       />
       <StatCard 
         title="通过率"
@@ -29,7 +26,6 @@
         suffix="%"
         icon="checkCircle"
         color="warning"
-        :trend="5"
       />
     </div>
 
@@ -88,7 +84,7 @@
           <h3 class="card-title">热门场景</h3>
           <span class="card-badge">TOP 5</span>
         </div>
-        <div class="scene-list">
+        <div class="scene-list" v-if="topScenes.length > 0">
           <div 
             v-for="(scene, index) in topScenes" 
             :key="scene.id"
@@ -99,10 +95,13 @@
               <span class="scene-name">{{ scene.name }}</span>
               <span class="scene-runs">{{ scene.runs }} 次执行</span>
             </div>
-            <div class="scene-rate" :class="getRateClass(scene.passRate)">
-              {{ scene.passRate }}%
+            <div class="scene-rate" :class="getRateClass(scene.pass_rate)">
+              {{ scene.pass_rate }}%
             </div>
           </div>
+        </div>
+        <div class="empty-tips" v-else>
+          暂无运行数据
         </div>
       </div>
 
@@ -112,7 +111,7 @@
           <h3 class="card-title">需要关注</h3>
           <span class="card-badge warning">需处理</span>
         </div>
-        <div class="scene-list">
+        <div class="scene-list" v-if="failedScenes.length > 0">
           <div 
             v-for="scene in failedScenes" 
             :key="scene.id"
@@ -127,12 +126,15 @@
             </div>
             <div class="scene-info">
               <span class="scene-name">{{ scene.name }}</span>
-              <span class="scene-time">{{ scene.lastFail }}</span>
+              <span class="scene-time">{{ scene.last_fail }}</span>
             </div>
             <div class="scene-fails">
-              {{ scene.failCount }} 次
+              {{ scene.fail_count }} 次
             </div>
           </div>
+        </div>
+        <div class="empty-tips" v-else>
+          没有失败场景，继续保持！
         </div>
       </div>
 
@@ -149,25 +151,13 @@
             </div>
             <span>新建项目</span>
           </div>
-          <div class="action-item" @click="router.push('/projects')">
+          <div class="action-item" v-if="quickActions.length > 0" @click="router.push(quickActions[0]?.route || '/projects')">
             <div class="action-icon success">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="17 8 12 3 7 8"></polyline>
-                <line x1="12" y1="3" x2="12" y2="15"></line>
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
             </div>
-            <span>导入接口</span>
-          </div>
-          <div class="action-item" @click="router.push('/projects')">
-            <div class="action-icon info">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-            </div>
-            <span>导出报告</span>
+            <span>{{ quickActions[0]?.name || '运行场景' }}</span>
           </div>
         </div>
       </div>
@@ -178,14 +168,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProjectStore } from '@/stores/projectStore'
 import { useDashboardStats } from '@/composables/useDashboardStats'
 import StatCard from '@/components/charts/StatCard.vue'
 import TrendChart from '@/components/charts/TrendChart.vue'
 import HealthGauge from '@/components/charts/HealthGauge.vue'
 
 const router = useRouter()
-const projectStore = useProjectStore()
 
 // 仪表盘统计
 const {
@@ -194,6 +182,7 @@ const {
   healthScore,
   topScenes,
   failedScenes,
+  quickActions,
   fetchStats
 } = useDashboardStats()
 
@@ -215,7 +204,6 @@ function getRateClass(rate: number): string {
 
 // 初始化
 onMounted(async () => {
-  await projectStore.fetchProjects()
   await fetchStats()
 })
 </script>
@@ -589,5 +577,13 @@ onMounted(async () => {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* 空状态提示 */
+.empty-tips {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 </style>

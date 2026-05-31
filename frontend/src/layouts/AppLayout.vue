@@ -21,7 +21,7 @@
               <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
           </div>
-          <span class="nav-text">仪表盘</span>
+          <span class="nav-text">工作台</span>
           <div class="nav-indicator"></div>
         </router-link>
         <router-link to="/projects" class="nav-item" :class="{ active: isActive('/projects') }">
@@ -61,8 +61,29 @@
         <div class="topbar-left">
           <h1 class="page-title">{{ pageTitle }}</h1>
         </div>
+        <div class="topbar-center" v-if="projectStore.currentProject && showTopbarNav">
+          <div class="topbar-nav">
+            <router-link 
+              v-for="tab in tabs" 
+              :key="tab.path"
+              :to="tab.path"
+              class="topbar-nav-item"
+              :class="{ active: isActiveTab(tab.path) }"
+            >
+              {{ tab.name }}
+            </router-link>
+          </div>
+        </div>
         <div class="topbar-right">
-          <div class="env-selector" v-if="projectStore.currentProject">
+          <div class="project-selector" v-if="projectStore.projects.length > 0">
+            <select v-model="selectedProjectId" @change="handleProjectChange" class="project-select">
+              <option :value="null">选择项目</option>
+              <option v-for="project in projectStore.projects" :key="project.id" :value="project.id">
+                {{ project.name }}
+              </option>
+            </select>
+          </div>
+          <div class="env-selector" v-if="projectStore.currentProject && projectStore.environments.length > 0">
             <select v-model="selectedEnvId" @change="handleEnvChange" class="env-select">
               <option :value="null">选择环境</option>
               <option v-for="env in projectStore.environments" :key="env.id" :value="env.id">
@@ -80,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProjectStore } from '@/stores/projectStore'
@@ -93,27 +114,61 @@ const projectStore = useProjectStore()
 
 const userStore = authStore
 
+const selectedProjectId = ref<number | null>(null)
 const selectedEnvId = ref<number | null>(null)
 
+const tabs = [
+  { name: '接口', path: '/apis' },
+  { name: '用例', path: '/cases' },
+  { name: '场景', path: '/scenes' },
+  { name: '报告', path: '/reports' },
+  { name: '环境', path: '/environments' },
+  { name: 'Mock', path: '/mock' }
+]
+
 const pageTitle = computed(() => {
-  if (route.path === '/') return '仪表盘'
+  if (route.path === '/') return '工作台'
   if (route.path === '/projects') return '项目管理'
-  if (route.path.includes('/apis')) return '接口管理'
-  if (route.path.includes('/cases')) return '测试用例'
-  if (route.path.includes('/scenes')) return '场景管理'
-  if (route.path.includes('/reports')) return '测试报告'
-  if (route.path.includes('/environments')) return '环境配置'
-  if (route.path.includes('/mock')) return 'Mock服务'
-  return 'API Pilot'
+  return '工作台'
+})
+
+// 是否显示顶部导航
+const showTopbarNav = computed(() => {
+  return projectStore.currentProject && (
+    route.path.includes('/apis') ||
+    route.path.includes('/cases') ||
+    route.path.includes('/scenes') ||
+    route.path.includes('/reports') ||
+    route.path.includes('/environments') ||
+    route.path.includes('/mock')
+  )
 })
 
 function isActive(path: string): boolean {
   return route.path === path
 }
 
+function isActiveTab(path: string): boolean {
+  return route.path.includes(path)
+}
+
 function handleLogout() {
   authStore.logout()
   router.push('/login')
+}
+
+async function handleProjectChange() {
+  if (selectedProjectId.value) {
+    const project = projectStore.projects.find(p => p.id === selectedProjectId.value)
+    if (project) {
+      projectStore.currentProject = project
+      await projectStore.fetchEnvironments(project.id)
+      // 跳转到项目的接口页面
+      router.push(`/projects/${project.id}/apis`)
+    }
+  } else {
+    projectStore.currentProject = null
+  }
 }
 
 async function handleEnvChange() {
@@ -125,9 +180,27 @@ async function handleEnvChange() {
   }
 }
 
-watch(() => projectStore.currentProject, async (project) => {
-  if (project) {
-    await projectStore.fetchEnvironments(project.id)
+// 当项目详情路由变化时同步项目状态
+watch(() => route.params.projectId, async (projectId) => {
+  if (projectId) {
+    const id = Number(projectId)
+    if (!projectStore.currentProject || projectStore.currentProject.id !== id) {
+      await projectStore.fetchProject(id)
+      selectedProjectId.value = id
+      await projectStore.fetchEnvironments(id)
+    }
+  }
+})
+
+onMounted(async () => {
+  await projectStore.fetchProjects()
+  
+  // 如果当前在项目详情页面，同步项目
+  if (route.params.projectId) {
+    const id = Number(route.params.projectId)
+    await projectStore.fetchProject(id)
+    selectedProjectId.value = id
+    await projectStore.fetchEnvironments(id)
   }
 })
 </script>
@@ -379,10 +452,73 @@ watch(() => projectStore.currentProject, async (project) => {
   letter-spacing: -0.01em;
 }
 
+.topbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.topbar-nav {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--color-surface-muted);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+}
+
+.topbar-nav-item {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.topbar-nav-item:hover {
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+}
+
+.topbar-nav-item.active {
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+}
+
 .topbar-right {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+}
+
+.project-select {
+  padding: var(--space-2) var(--space-3);
+  padding-right: var(--space-8);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236366F1' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  min-width: 140px;
+}
+
+.project-select:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.project-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 .env-select {

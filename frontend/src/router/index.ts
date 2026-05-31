@@ -27,6 +27,7 @@ const routes: RouteRecordRaw[] = [
         path: 'projects/:projectId',
         name: 'ProjectDetail',
         component: () => import('@/views/ProjectDetailView.vue'),
+        redirect: (to) => `/projects/${to.params.projectId}/apis`,
         children: [
           {
             path: 'apis',
