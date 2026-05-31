@@ -18,16 +18,16 @@ def sanitize_html(text: str) -> str:
     """清理HTML和脚本内容，防止XSS攻击"""
     if not text:
         return text
-    # HTML转义
+    # HTML转义 - 关键步骤
     escaped = html.escape(text, quote=True)
-    # 额外移除script标签和事件处理器
-    patterns = [
-        r'<script[^>]*>.*?</script>',
-        r'javascript:',
-        r'on\w+\s*=',
+    # 移除危险的事件处理器和协议
+    dangerous_patterns = [
+        (r'javascript\s*:', ''),
+        (r'vbscript\s*:', ''),
+        (r'on\w+\s*=\s*["\']?[^"\'>\s]+', ''),
     ]
-    for pattern in patterns:
-        escaped = re.sub(pattern, '', escaped, flags=re.IGNORECASE | re.DOTALL)
+    for pattern, replacement in dangerous_patterns:
+        escaped = re.sub(pattern, replacement, escaped, flags=re.IGNORECASE)
     return escaped
 
 
@@ -97,7 +97,37 @@ async def update_project(
     if project.owner_id != current_user.id and not current_user.is_superuser:
         raise ForbiddenError("No permission to update this project")
 
-    for key, value in project_data.model_dump(exclude_unset=True).items():
+    update_data = project_data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        if key in ("name", "description") and value:
+            value = sanitize_html(value)
+        setattr(project, key, value)
+
+    await db.commit()
+    await db.refresh(project)
+    return project
+
+
+@router.patch("/{project_id}", response_model=ProjectResponse)
+async def patch_project(
+    project_id: int,
+    project_data: ProjectUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """部分更新项目 (PATCH)"""
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    project = result.scalar_one_or_none()
+    if not project:
+        raise NotFoundError("Project not found")
+
+    if project.owner_id != current_user.id and not current_user.is_superuser:
+        raise ForbiddenError("No permission to update this project")
+
+    update_data = project_data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        if key in ("name", "description") and value:
+            value = sanitize_html(value)
         setattr(project, key, value)
 
     await db.commit()
