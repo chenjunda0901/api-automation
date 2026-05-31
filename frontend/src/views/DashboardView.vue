@@ -52,7 +52,7 @@
               </button>
             </div>
           </div>
-          <TrendChart :data="trendData" :height="320" />
+          <TrendChart :data="trendData" :height="280" />
         </div>
       </div>
 
@@ -64,11 +64,16 @@
             <HealthGauge 
               :score="healthScore.score"
               :level="healthScore.level"
-              :size="160"
+              :size="140"
             />
           </div>
           <div class="health-trend" :class="healthScore.trend >= 0 ? 'up' : 'down'">
-            <AppIcon :name="healthScore.trend >= 0 ? 'chevronUp' : 'chevronDown'" :size="16" />
+            <svg v-if="healthScore.trend >= 0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
             <span>较上周 {{ healthScore.trend >= 0 ? '+' : '' }}{{ healthScore.trend }}%</span>
           </div>
         </div>
@@ -79,13 +84,17 @@
     <div class="dashboard-bottom">
       <!-- 热门场景 -->
       <div class="bottom-card">
-        <h3 class="card-title">热门场景</h3>
+        <div class="card-header-simple">
+          <h3 class="card-title">热门场景</h3>
+          <span class="card-badge">TOP 5</span>
+        </div>
         <div class="scene-list">
           <div 
-            v-for="scene in topScenes" 
+            v-for="(scene, index) in topScenes" 
             :key="scene.id"
             class="scene-item"
           >
+            <div class="scene-rank">{{ index + 1 }}</div>
             <div class="scene-info">
               <span class="scene-name">{{ scene.name }}</span>
               <span class="scene-runs">{{ scene.runs }} 次执行</span>
@@ -99,38 +108,65 @@
 
       <!-- 失败场景 -->
       <div class="bottom-card">
-        <h3 class="card-title">需要关注</h3>
-        <div class="scene-list error">
+        <div class="card-header-simple">
+          <h3 class="card-title">需要关注</h3>
+          <span class="card-badge warning">需处理</span>
+        </div>
+        <div class="scene-list">
           <div 
             v-for="scene in failedScenes" 
             :key="scene.id"
             class="scene-item"
           >
+            <div class="scene-icon error">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
             <div class="scene-info">
               <span class="scene-name">{{ scene.name }}</span>
               <span class="scene-time">{{ scene.lastFail }}</span>
             </div>
             <div class="scene-fails">
-              {{ scene.failCount }} 次失败
+              {{ scene.failCount }} 次
             </div>
           </div>
         </div>
       </div>
 
       <!-- 快捷操作 -->
-      <div class="bottom-card actions">
+      <div class="bottom-card">
         <h3 class="card-title">快捷操作</h3>
         <div class="action-grid">
           <div class="action-item" @click="router.push('/projects')">
-            <AppIcon name="plus" :size="20" />
+            <div class="action-icon primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
             <span>新建项目</span>
           </div>
           <div class="action-item" @click="router.push('/projects')">
-            <AppIcon name="upload" :size="20" />
+            <div class="action-icon success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
             <span>导入接口</span>
           </div>
           <div class="action-item" @click="router.push('/projects')">
-            <AppIcon name="download" :size="20" />
+            <div class="action-icon info">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
             <span>导出报告</span>
           </div>
         </div>
@@ -195,15 +231,15 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
 }
 
 /* 主内容区域 */
 .dashboard-main {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: var(--space-6);
-  margin-bottom: var(--space-6);
+  grid-template-columns: 1fr 260px;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 
 .card-header {
@@ -213,12 +249,33 @@ onMounted(async () => {
   margin-bottom: var(--space-4);
 }
 
+.card-header-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
 .card-title {
   font-family: var(--font-display);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: var(--font-semibold);
   color: var(--color-text);
   margin: 0;
+}
+
+.card-badge {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.card-badge.warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 /* 图表卡片 */
@@ -226,34 +283,37 @@ onMounted(async () => {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: var(--space-6);
+  padding: var(--space-5);
 }
 
 .period-selector {
   display: flex;
   gap: var(--space-1);
+  background: var(--color-surface-muted);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
 }
 
 .period-btn {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-1-5) var(--space-3);
   font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
   background: transparent;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
+  font-weight: var(--font-medium);
 }
 
 .period-btn:hover {
-  color: var(--color-text);
-  background: var(--color-surface-hover);
+  color: var(--color-text-secondary);
 }
 
 .period-btn.active {
-  color: var(--color-primary);
-  background: var(--color-primary-light);
-  font-weight: var(--font-medium);
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
 }
 
 /* 健康度卡片 */
@@ -261,36 +321,44 @@ onMounted(async () => {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: var(--space-6);
+  padding: var(--space-5);
   text-align: center;
 }
 
+.health-card .card-title {
+  font-size: var(--text-sm);
+}
+
 .health-gauge-wrapper {
-  margin: var(--space-6) 0;
+  margin: var(--space-4) 0;
 }
 
 .health-trend {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-1);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-full);
 }
 
 .health-trend.up {
   color: var(--color-success);
+  background: var(--color-success-subtle);
 }
 
 .health-trend.down {
   color: var(--color-error);
+  background: var(--color-error-subtle);
 }
 
 /* 底部区域 */
 .dashboard-bottom {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 
 .bottom-card {
@@ -298,11 +366,6 @@ onMounted(async () => {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
-}
-
-.bottom-card .card-title {
-  font-size: var(--text-base);
-  margin-bottom: var(--space-4);
 }
 
 /* 场景列表 */
@@ -314,9 +377,9 @@ onMounted(async () => {
 
 .scene-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--space-3);
+  gap: var(--space-3);
+  padding: var(--space-2-5) var(--space-3);
   border-radius: var(--radius-md);
   transition: all var(--duration-fast) var(--ease-out);
 }
@@ -325,7 +388,38 @@ onMounted(async () => {
   background: var(--color-surface-hover);
 }
 
+.scene-rank {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.scene-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.scene-icon.error {
+  background: var(--color-error-subtle);
+  color: var(--color-error);
+}
+
 .scene-info {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -335,6 +429,9 @@ onMounted(async () => {
   font-size: var(--text-sm);
   color: var(--color-text);
   font-weight: var(--font-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .scene-runs,
@@ -348,31 +445,34 @@ onMounted(async () => {
   font-weight: var(--font-semibold);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
+  flex-shrink: 0;
 }
 
 .scene-rate.excellent {
   color: var(--color-success);
-  background: var(--color-success-light);
+  background: var(--color-success-subtle);
 }
 
 .scene-rate.good {
   color: var(--color-info);
-  background: rgba(34, 211, 238, 0.1);
+  background: var(--color-info-subtle);
 }
 
 .scene-rate.warning {
   color: var(--color-warning);
-  background: var(--color-warning-light);
+  background: var(--color-warning-subtle);
 }
 
 .scene-rate.critical {
   color: var(--color-error);
-  background: var(--color-error-light);
+  background: var(--color-error-subtle);
 }
 
 .scene-fails {
   font-size: var(--text-xs);
   color: var(--color-error);
+  font-weight: var(--font-medium);
+  flex-shrink: 0;
 }
 
 /* 快捷操作 */
@@ -395,12 +495,57 @@ onMounted(async () => {
 
 .action-item:hover {
   background: var(--color-surface-hover);
-  color: var(--color-primary);
+}
+
+.action-item:hover span {
+  color: var(--color-text);
 }
 
 .action-item span {
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.action-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.action-icon.primary {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.action-icon.success {
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+}
+
+.action-icon.info {
+  background: var(--color-info-subtle);
+  color: var(--color-info);
+}
+
+.action-item:hover .action-icon.primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.action-item:hover .action-icon.success {
+  background: var(--color-success);
+  color: white;
+}
+
+.action-item:hover .action-icon.info {
+  background: var(--color-info);
+  color: white;
 }
 
 /* 入场动画 */
@@ -417,7 +562,7 @@ onMounted(async () => {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;

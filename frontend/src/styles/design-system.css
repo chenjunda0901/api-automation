@@ -1,85 +1,107 @@
 /* ================================================
-   API Pilot Design System v2.0
-   极简深空主题 - 灵感来自夜空与星辰
+   API Pilot Design System v3.0
+   精致浅色主题 - 清新、专业、舒适
    ================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* === 品牌色系 === */
-  --color-primary: #6366F1;
-  --color-primary-hover: #4F46E5;
-  --color-primary-active: #4338CA;
-  --color-primary-light: rgba(99, 102, 241, 0.1);
-  --color-primary-glow: rgba(99, 102, 241, 0.3);
+  /* === 品牌主色系 === */
+  --color-primary: #5B7FFF;
+  --color-primary-hover: #4A6AE5;
+  --color-primary-active: #3A5AD4;
+  --color-primary-light: rgba(91, 127, 255, 0.08);
+  --color-primary-subtle: rgba(91, 127, 255, 0.04);
+  --color-primary-ring: rgba(91, 127, 255, 0.25);
   
-  --color-accent: #22D3EE;
-  --color-accent-hover: #06B6D4;
+  --color-accent: #6C8EF5;
+  --color-accent-hover: #5B7FFF;
   
-  --color-success: #10B981;
-  --color-success-light: rgba(16, 185, 129, 0.1);
+  /* === 语义色系 === */
+  --color-success: #22C55E;
+  --color-success-light: rgba(34, 197, 94, 0.1);
+  --color-success-subtle: rgba(34, 197, 94, 0.05);
   
   --color-warning: #F59E0B;
   --color-warning-light: rgba(245, 158, 11, 0.1);
+  --color-warning-subtle: rgba(245, 158, 11, 0.05);
   
   --color-error: #EF4444;
   --color-error-light: rgba(239, 68, 68, 0.1);
+  --color-error-subtle: rgba(239, 68, 68, 0.05);
   
-  /* === 深空主题配色 === */
-  --color-bg: #0B0D17;
-  --color-surface: #13151F;
-  --color-surface-elevated: #1A1D2E;
-  --color-surface-hover: rgba(255, 255, 255, 0.03);
-  --color-surface-active: rgba(99, 102, 241, 0.08);
+  --color-info: #3B82F6;
+  --color-info-light: rgba(59, 130, 246, 0.1);
+  --color-info-subtle: rgba(59, 130, 246, 0.05);
   
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 255, 255, 0.1);
+  /* === 浅色主题背景层次 === */
+  --color-bg: #F4F6FA;
+  --color-bg-subtle: #EEF1F6;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FAFBFD;
+  --color-surface-hover: rgba(59, 69, 89, 0.04);
+  --color-surface-active: rgba(91, 127, 255, 0.06);
+  --color-surface-muted: rgba(59, 69, 89, 0.02);
+  
+  /* === 边框系统 === */
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-border-subtle: rgba(148, 163, 184, 0.12);
+  --color-border-hover: rgba(148, 163, 184, 0.35);
   --color-border-focus: var(--color-primary);
+  --color-border-strong: rgba(148, 163, 184, 0.5);
   
-  --color-text: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-  --color-text-disabled: #475569;
+  /* === 文字层次 === */
+  --color-text: #1E293B;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748B;
+  --color-text-muted: #94A3B8;
+  --color-text-disabled: #CBD5E1;
+  --color-text-inverse: #FFFFFF;
   
   /* === 渐变系统 === */
-  --gradient-hero: linear-gradient(135deg, #13151F 0%, #1E1B4B 50%, #312E81 100%);
-  --gradient-card: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
-  --gradient-glow: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-  --gradient-shine: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%);
-  --gradient-border: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  --gradient-hero: linear-gradient(145deg, #FFFFFF 0%, #F4F6FA 50%, #EEF1F6 100%);
+  --gradient-card: linear-gradient(180deg, rgba(91, 127, 255, 0.02) 0%, transparent 60%);
+  --gradient-shine: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
+  --gradient-subtle: linear-gradient(135deg, var(--color-primary-light) 0%, transparent 50%);
   
   /* === 字体系统 === */
-  --font-display: 'Sora', system-ui, -apple-system, sans-serif;
-  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
   
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.1875rem;
+  --text-2xl: 1.375rem;
+  --text-3xl: 1.625rem;
+  --text-4xl: 2rem;
   
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
   
-  --leading-tight: 1.25;
+  --leading-tight: 1.3;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.75;
+  --leading-relaxed: 1.65;
   
-  /* === 空间系统 === */
+  /* === 空间系统 (4px base) === */
   --space-unit: 4px;
   --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 2px;
   --space-1: var(--space-unit);
+  --space-1-5: 6px;
   --space-2: calc(var(--space-unit) * 2);
+  --space-2-5: 10px;
   --space-3: calc(var(--space-unit) * 3);
+  --space-3-5: 14px;
   --space-4: calc(var(--space-unit) * 4);
   --space-5: calc(var(--space-unit) * 5);
   --space-6: calc(var(--space-unit) * 6);
+  --space-7: calc(var(--space-unit) * 7);
   --space-8: calc(var(--space-unit) * 8);
   --space-10: calc(var(--space-unit) * 10);
   --space-12: calc(var(--space-unit) * 12);
@@ -88,23 +110,22 @@
   --space-24: calc(var(--space-unit) * 24);
   
   /* === 圆角系统 === */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-2xl: 28px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
   --radius-full: 9999px;
   
   /* === 阴影系统 === */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.25), 0 4px 8px rgba(0, 0, 0, 0.2);
-  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.25);
-  --shadow-2xl: 0 24px 48px rgba(0, 0, 0, 0.4), 0 12px 24px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.2);
-  --shadow-glow-lg: 0 0 80px rgba(99, 102, 241, 0.3);
-  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-xs: 0 1px 2px rgba(30, 41, 59, 0.04);
+  --shadow-sm: 0 1px 3px rgba(30, 41, 59, 0.06), 0 1px 2px rgba(30, 41, 59, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(30, 41, 59, 0.06), 0 2px 4px -1px rgba(30, 41, 59, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(30, 41, 59, 0.08), 0 4px 6px -2px rgba(30, 41, 59, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(30, 41, 59, 0.08), 0 10px 10px -5px rgba(30, 41, 59, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(30, 41, 59, 0.15);
+  --shadow-inner: inset 0 2px 4px rgba(30, 41, 59, 0.04);
+  --shadow-focus: 0 0 0 3px var(--color-primary-ring);
   
   /* === 动效系统 === */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -113,10 +134,10 @@
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
   --duration-instant: 50ms;
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 400ms;
-  --duration-slower: 600ms;
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
   
   /* === Z-Index层级 === */
   --z-dropdown: 100;
@@ -129,37 +150,8 @@
   --z-toast: 800;
   
   /* === 布局尺寸 === */
-  --sidebar-width: 260px;
+  --sidebar-width: 256px;
   --sidebar-collapsed: 72px;
-  --topbar-height: 64px;
-  --content-max-width: 1400px;
-}
-
-/* === 暗色主题（默认） === */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-  }
-}
-
-/* === 浅色主题（可选） === */
-[data-theme="light"] {
-  --color-bg: #F8FAFC;
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #F1F5F9;
-  --color-surface-hover: rgba(0, 0, 0, 0.03);
-  --color-surface-active: rgba(99, 102, 241, 0.05);
-  
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-hover: rgba(0, 0, 0, 0.12);
-  
-  --color-text: #0F172A;
-  --color-text-secondary: #475569;
-  --color-text-muted: #94A3B8;
-  
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --topbar-height: 60px;
+  --content-max-width: 1280px;
 }
