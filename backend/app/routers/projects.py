@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from typing import List
+import html
+import re
 from app.database import get_db
 from app.models.entities import Project, ProjectMember, Environment
 from app.schemas.project import ProjectCreate, ProjectUpdate, ProjectResponse, ProjectMemberCreate, ProjectMemberResponse, EnvironmentCreate, EnvironmentUpdate, EnvironmentResponse
@@ -10,6 +12,23 @@ from app.models.user import User
 from app.core.exceptions import NotFoundError, ForbiddenError
 
 router = APIRouter(prefix="/api/projects", tags=["项目管理"])
+
+
+def sanitize_html(text: str) -> str:
+    """清理HTML和脚本内容，防止XSS攻击"""
+    if not text:
+        return text
+    # HTML转义
+    escaped = html.escape(text, quote=True)
+    # 额外移除script标签和事件处理器
+    patterns = [
+        r'<script[^>]*>.*?</script>',
+        r'javascript:',
+        r'on\w+\s*=',
+    ]
+    for pattern in patterns:
+        escaped = re.sub(pattern, '', escaped, flags=re.IGNORECASE | re.DOTALL)
+    return escaped
 
 
 @router.get("", response_model=List[ProjectResponse])
@@ -38,8 +57,8 @@ async def create_project(
 ):
     """创建项目"""
     project = Project(
-        name=project_data.name,
-        description=project_data.description,
+        name=sanitize_html(project_data.name),
+        description=sanitize_html(project_data.description) if project_data.description else None,
         owner_id=current_user.id
     )
     db.add(project)
