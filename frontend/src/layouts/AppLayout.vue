@@ -20,6 +20,9 @@
         </router-link>
       </nav>
       <div class="sidebar-footer">
+        <div class="footer-actions">
+          <ThemeSwitcher />
+        </div>
         <div class="user-info">
           <span class="user-avatar">{{ userStore.user?.username?.[0]?.toUpperCase() || 'U' }}</span>
           <span class="user-name">{{ userStore.user?.username }}</span>
@@ -58,6 +61,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProjectStore } from '@/stores/projectStore'
+import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -202,6 +206,10 @@ watch(() => projectStore.currentProject, async (project) => {
 .sidebar-footer {
   padding: var(--space-4);
   border-top: 1px solid var(--color-border);
+}
+
+.footer-actions {
+  margin-bottom: var(--space-4);
 }
 
 .user-info {

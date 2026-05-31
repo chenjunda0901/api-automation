@@ -8,11 +8,13 @@ import './styles/global.css'
 
 // 注册全局组件
 import AppIcon from '@/components/icons/AppIcon.vue'
+import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
 
 const app = createApp(App)
 
 // 全局组件
 app.component('AppIcon', AppIcon)
+app.component('ThemeSwitcher', ThemeSwitcher)
 
 app.use(createPinia())
 app.use(router)
